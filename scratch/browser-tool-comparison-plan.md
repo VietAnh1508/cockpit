@@ -58,6 +58,18 @@ Run the scenario manually once yourself first to pin exact numbers/prices before
 4. **Same prompt every time**: "Here is a scenario file: [contents of store-scenario.md]. Complete each step and report your findings for steps 2, 6, 7, and 8." No extra hints.
 5. **Grade immediately after each run** using the answer key, before starting the next run, so grading criteria don't drift.
 
+### Execution mechanism
+
+Run each of the 9 runs as a plain **Agent tool** call (not the Workflow tool — 9 runs is small enough that Agent calls alone are simpler, and Workflow's orchestration overhead isn't needed here).
+
+- Each Agent call gives a fresh, history-free session on its own — satisfies point 2 for free.
+- To satisfy point 1 (isolation), a general-purpose subagent can see every connected MCP tool by default, which isn't good enough — the model could quietly reach for a different tool mid-run. Define three narrow custom subagent types, one per tool, each restricted in its frontmatter to only that tool's MCP functions (plus Read/Bash if needed for grading support):
+  - `playwright-tester` — only `mcp__playwright__*` tools
+  - `chrome-devtools-tester` — only `mcp__chrome-devtools__*` tools
+  - `claude-in-chrome-tester` — only `mcp__claude-in-chrome__*` tools
+- Token usage and wall-clock time come straight from the Agent tool's own completion notification (`subagent_tokens`, `duration_ms`) — no extra instrumentation needed.
+- Tool-call count isn't in that notification, so ask each subagent to report how many tool calls it made as part of its final answer.
+
 ## Output
 
 A results table in `scratch/store-scenario-results.md`:
@@ -67,8 +79,7 @@ A results table in `scratch/store-scenario-results.md`:
 
 Plus a short written verdict at the bottom: which tool to default to, and which situations flip the recommendation (e.g., "Playwright MCP wins on tokens but Claude in Chrome caught the image bug that Playwright missed").
 
-## Open questions before running this
+## Open questions — resolved
 
-- Is Chrome DevTools MCP actually installed/configured yet, or does that need setup first?
-- Is Playwright MCP installed, or does it need `npx @playwright/mcp` set up first?
-- Do we score task 7 (visual bug) as pass/fail by a human reading the tool's report, or do we need a stricter rubric?
+- Chrome DevTools MCP and Playwright MCP are both installed and confirmed working (smoke-tested against saucedemo.com on 2026-07-03: both navigated, screenshotted, and read console messages correctly).
+- Task 7 (visual bug) is scored pass/fail by a human reading the tool's report against the answer key — no separate rubric needed.
