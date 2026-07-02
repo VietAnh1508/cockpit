@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "list-skills": {
+      "source": "vietanh1508/skills",
+      "sourceType": "github",
+      "skillPath": "list-skills/SKILL.md",
+      "computedHash": "f6041bd3e4bc0295a532a1bc539f566c2372a7f50392f850d648a20c92eda511"
+    },
+    "socratic-tutor": {
+      "source": "vietanh1508/skills",
+      "sourceType": "github",
+      "skillPath": "socratic-tutor/SKILL.md",
+      "computedHash": "86476d6c4870718c2f31e829527d6ea0f93c8c7e6ce0e13ae200ff0606b5f650"
+    },
+    "ux-audit": {
+      "source": "vietanh1508/skills",
+      "sourceType": "github",
+      "skillPath": "ux-audit/SKILL.md",
+      "computedHash": "0c661a62561ecf3dc8feba6459acac0a81179fa2676316f87abb4658d85b0dac"
+    }
+  }
+}
